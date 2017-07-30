@@ -5,6 +5,10 @@ class Distances(object):
         self._memoized_atrributes_min_max = {}
 
     def _get_attribute_min_max(self, index):
+        """
+        Returns the minimum and maximum values at 'index' in the
+        data.
+        """
         if index in self._memoized_atrributes_min_max:
             return self._memoized_atrributes_min_max[index]
 
@@ -18,15 +22,30 @@ class Distances(object):
         return minimum, maximum
 
     def _numeric_distance(self, i, j, index):
+        """
+        Returns the normalized distance between the values at 'index' for rows
+        'i','j' in the data.
+        """
         value_1 = self._data[i][index]
         value_2 = self._data[j][index]
         minimum, maximum = self._get_attribute_min_max(index)
         return abs(value_1 - value_2) / float(maximum - minimum)
 
     def _nominal_distance(self, v1, v2):
+        """
+        Returns the distance between two nominal values.
+        """
         return 0 if v1 == v2 else 1
 
     def _get_distance(self, i, j):
+        """
+        Returns the distance between rows 'i','j' in the data.
+        Rows can be of mixed data types, supported data types
+        are 'numeric', 'binary_asymmetric', 'binary_symmetric',
+        'ordinal', 'nominal'.
+        The special data type 'identifier' is simply ignored from
+        the calculation.
+        """
         row_i = self._data[i]
         row_j = self._data[j]
         numerator = []
@@ -58,6 +77,10 @@ class Distances(object):
         return sum(numerator) / float(sum(denominator))
 
     def get_distances(self):
+        """
+        Returns a matrix of distances between each row in the data.
+        The resultant matrix is symmetric, this is, a[i][j] == a[j][i].
+        """
         distances = [
             [0 for _ in range(0, len(self._data))]
             for _ in range(0, len(self._data))
