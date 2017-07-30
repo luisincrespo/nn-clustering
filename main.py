@@ -22,7 +22,7 @@ def prepare_data(data_file, data_info_file):
     # <attribute_name>,<attribute_type>,<possible_values>
     # where <attribute_type> is one of 'nominal', 'ordinal', 'numeric',
     # 'binary_symmetric', 'binary_asymmetric'
-    # <possible_values> can be ommited
+    # <possible_values> can be omitted
     with open(data_info_file, 'r') as f:
         data_info = [{
             'name': 'ID',
@@ -39,11 +39,14 @@ def prepare_data(data_file, data_info_file):
             data_info.append(info)
         f.close()
 
-    # convert to float data of type 'numeric'
+    # - convert 'numeric' values to float
+    # - replace missing '?' values with None
     for row in data:
         for i in range(0, len(row)):
             if data_info[i]['type'] == 'numeric':
                 row[i] = float(row[i])
+            if row[i] == '?':
+                row[i] = None
 
     return data, data_info
 
@@ -59,7 +62,8 @@ def main():
                         help='absolute or relative path to data info file')
     parser.add_argument('--threshold', dest='threshold', type=float,
                         required=True,
-                        help='threshold to be used by the algorithm')
+                        help='threshold to be used by the algorithm'
+                        ' (should be value between 0..1)')
     parser.add_argument('--outputfile', dest='output_file', type=str,
                         help='absolute or relative path to file where'
                              ' results should be written (if not'
