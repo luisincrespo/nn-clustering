@@ -1,8 +1,16 @@
 import argparse
-import pprint
 
 from distances import Distances
 from nearest_neighbor import NearestNeighbor
+
+
+def pretty_print_clusters(clusters):
+    string_buffer = []
+    for index, cluster in enumerate(clusters):
+        string_buffer.append('Cluster {}\n'.format(index + 1))
+        for elem in cluster:
+            string_buffer.append('\t - {}\n'.format(elem[1]))
+    return ''.join(string_buffer)
 
 
 def prepare_data(data_file, data_info_file):
@@ -74,12 +82,13 @@ def main():
     distances = Distances(data, data_info).get_distances()
     clusters = NearestNeighbor(data, distances, args.threshold).get_clusters()
 
+    printed_clusters = pretty_print_clusters(clusters)
     if args.output_file:
         with open(args.output_file, 'w') as f:
-            pprint.pprint(clusters, f)
+            f.write(printed_clusters)
             f.close()
     else:
-        pprint.pprint(clusters)
+        print printed_clusters
 
 
 if __name__ == '__main__':
