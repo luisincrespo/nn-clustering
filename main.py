@@ -1,7 +1,7 @@
 import argparse
 import pprint
 
-from distances import get_distances
+from distances import Distances
 from cluster import get_clusters
 
 
@@ -55,7 +55,7 @@ def main():
     args = parser.parse_args()
 
     data, data_info = prepare_data(args.data_file, args.data_info_file)
-    distances = get_distances(data, data_info)
+    distances = Distances(data, data_info).get_distances()
     clusters = get_clusters(data, distances, args.threshold)
     if args.output_file:
         with open(args.output_file, 'w') as f:
