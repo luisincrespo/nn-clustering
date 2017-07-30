@@ -2,7 +2,7 @@ import argparse
 import pprint
 
 from distances import Distances
-from cluster import get_clusters
+from nearest_neighbor import NearestNeighbor
 
 
 def prepare_data(data_file, data_info_file):
@@ -56,7 +56,8 @@ def main():
 
     data, data_info = prepare_data(args.data_file, args.data_info_file)
     distances = Distances(data, data_info).get_distances()
-    clusters = get_clusters(data, distances, args.threshold)
+    clusters = NearestNeighbor(data, distances, args.threshold).get_clusters()
+
     if args.output_file:
         with open(args.output_file, 'w') as f:
             pprint.pprint(clusters, f)
