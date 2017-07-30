@@ -1,4 +1,5 @@
 import argparse
+import pprint
 
 from distances import get_distances
 from cluster import get_clusters
@@ -47,11 +48,21 @@ def main():
     parser.add_argument('--threshold', dest='threshold', type=float,
                         required=True,
                         help='threshold to be used by the algorithm')
+    parser.add_argument('--outputfile', dest='output_file', type=str,
+                        help='absolute or relative path to file where'
+                             ' results should be written (if not'
+                             ' specified results are printed in stdout)')
     args = parser.parse_args()
 
     data, data_info = prepare_data(args.data_file, args.data_info_file)
     distances = get_distances(data, data_info)
-    return get_clusters(data, distances)
+    clusters = get_clusters(data, distances, args.threshold)
+    if args.output_file:
+        with open(args.output_file, 'w') as f:
+            pprint.pprint(clusters, f)
+            f.close()
+    else:
+        pprint.pprint(clusters)
 
 
 if __name__ == '__main__':
